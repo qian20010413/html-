@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>美国站 SUPAREE 品线市场分析仪表板 (2026年3月)</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .brand-color {
+            color: #2563eb;
+        }
+        
+        .brand-bg {
+            background-color: #2563eb;
+        }
+        
+        .highlight-row {
+            transition: background-color 0.2s ease;
+        }
+        
+        .highlight-row:hover {
+            background-color: #f1f5f9;
+        }
+        
+        .sortable {
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .sortable:hover {
+            background-color: #f8fafc;
+        }
+        
+        .asc::after {
+            content: " ↑";
+            font-weight: bold;
+        }
+        
+        .desc::after {
+            content: " ↓";
+            font-weight: bold;
+        }
+        
+        .opportunity-badge {
+            animation: pulse 2s infinite;
+        }
+        
+        .chart-label {
+            font-size: 11px;
+            font-weight: 600;
+            pointer-events: none;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+        
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+
+        /* 表格列背景色 */
+        .col-bg-light { background-color: #f9fafb; }
+        .col-sales { background-color: #eff6ff; } /* 浅蓝色 */
+        .col-volume { background-color: #f0fdf4; } /* 浅绿色 */
+        
+        /* 保证代码列不换行 */
+        .code-cell {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <div class="container mx-auto px-4 py-8">
+        <!-- 标题区域 -->
+        <header class="mb-10">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">亚马逊美国站 SUPAREE 品线市场分析</h1>
+                    <p class="text-gray-600">2026年3月销售数据 | 数据更新: 2026年3月16日 | 单位: 美元</p>
+                </div>
+                <div class="bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg">
+                    <span class="text-blue-700 font-medium">SUPAREE 品线深度洞察</span>
+                </div>
+            </div>
+            <div class="flex items-center mt-4">
+                <div class="brand-bg text-white px-3 py-1 rounded-full text-sm font-medium mr-4">SUPAREE</div>
+                <div class="text-gray-600 flex items-center">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    <span>品牌色 <span class="font-medium brand-color">#2563eb</span> 代表SUPAREE数据，灰色代表市场总量</span>
+                </div>
+            </div>
+        </header>
+        
+        <!-- 市场总览卡片 -->
+        <section class="mb-10">
+            <h2 class="text-xl font-semibold mb-6 text-gray-800">市场总览 (2026年3月，美国站)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- 统计市场规模 (去重) -->
+                <div class="card p-6 border-l-4 border-blue-500">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium mb-1">统计市场总规模</p>
+                            <p class="text-3xl font-bold text-gray-900">677.9<span class="text-lg">万</span></p>
+                            <p class="text-gray-500 text-sm mt-2">美元 (基于11个核心品线)</p>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded-lg">
+                            <i class="fas fa-chart-bar text-2xl text-blue-500"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <p class="text-gray-500 text-sm">涵盖品线 <span class="font-medium">11个</span>，月销量 <span class="font-medium">11.0万件</span></p>
+                    </div>
+                </div>
+                
+                <!-- 预估市场规模 (去重) -->
+                <div class="card p-6 border-l-4 border-purple-500">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium mb-1">预估市场总规模</p>
+                            <p class="text-3xl font-bold text-gray-900">801.0<span class="text-lg">万</span></p>
+                            <p class="text-gray-500 text-sm mt-2">美元 (基于完整预估)</p>
+                        </div>
+                        <div class="bg-purple-50 p-3 rounded-lg">
+                            <i class="fas fa-project-diagram text-2xl text-purple-500"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <p class="text-gray-500 text-sm">预估ASIN总数 <span class="font-medium">3,198个</span>，月销量 <span class="font-medium">12.9万件</span></p>
+                        <p class="text-xs text-gray-400 mt-1">基于完整市场数据模型估算</p>
+                    </div>
+                </div>
+                
+                <!-- SUPAREE 总销售额 -->
+                <div class="card p-6 border-l-4 border-green-500">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium mb-1">SUPAREE 总销售额</p>
+                            <p class="text-3xl font-bold text-gray-900 brand-color">15.3<span class="text-lg">万</span></p>
+                            <p class="text-gray-500 text-sm mt-2">美元</p>
+                        </div>
+                        <div class="bg-green-50 p-3 rounded-lg">
+                            <i class="fas fa-dollar-sign text-2xl brand-color"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <p class="text-gray-500 text-sm">总销量: <span class="font-medium brand-color">2,169件</span></p>
+                        <p class="text-xs text-gray-400 mt-1">涵盖9个在售品线</p>
+                    </div>
+                </div>
+                
+                <!-- 市场份额 -->
+                <div class="card p-6 border-l-4 border-orange-500">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium mb-1">市场份额</p>
+                            <p class="text-3xl font-bold text-gray-900">2.26<span class="text-lg">%</span></p>
+                            <p class="text-gray-500 text-sm mt-2">销售额市占率</p>
+                        </div>
+                        <div class="bg-orange-50 p-3 rounded-lg">
+                            <i class="fas fa-percentage text-2xl text-orange-500"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <p class="text-gray-500 text-sm">销量市占率: <span class="font-medium text-orange-600">1.97%</span></p>
+                        <p class="text-xs text-gray-400 mt-1">基于统计市场规模</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 市场容量说明 -->
+            <div class="card p-6 mb-6 bg-blue-50">
+                <div class="flex items-start">
+                    <i class="fas fa-info-circle text-blue-600 mt-1 mr-3 text-lg"></i>
+                    <div>
+                        <p class="font-medium text-blue-900">市场总量计算说明</p>
+                        <p class="text-sm text-blue-800 mt-1">• 美国大灯总成 包含 JEEP大灯，美国尾灯总成 包含 JEEP尾灯，市场总计已剔除重复子品类。<br>• SUPAREE总计包含所有子品类销售 (JEEP大灯、JEEP尾灯等)。</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SUPAREE核心指标 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="card p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium mb-1">平均客单价</p>
+                            <p class="text-2xl font-bold text-gray-900">70.5<span class="text-sm ml-1">美元</span></p>
+                        </div>
+                        <div class="text-purple-500 bg-purple-50 p-2 rounded">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium mb-1">优势品线 (市占＞5%)</p>
+                            <p class="text-2xl font-bold text-gray-900">4<span class="text-sm ml-1">个</span></p>
+                        </div>
+                        <div class="text-yellow-500 bg-yellow-50 p-2 rounded">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium mb-1">在售品线数</p>
+                            <p class="text-2xl font-bold text-gray-900">9<span class="text-sm ml-1">个</span></p>
+                        </div>
+                        <div class="text-green-500 bg-green-50 p-2 rounded">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium mb-1">年度预估</p>
+                            <p class="text-2xl font-bold text-gray-900">184<span class="text-sm ml-1">万美元</span></p>
+                        </div>
+                        <div class="text-blue-500 bg-blue-50 p-2 rounded">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 品线表现分析区 -->
+        <section class="mb-10">
+            <h2 class="text-xl font-semibold mb-6 text-gray-800">品线表现分析</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- 柱状图：各品线销售额对比 -->
+                <div class="card p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-medium">各品线销售额对比 (万美元)</h3>
+                        <div class="text-sm text-gray-500">
+                            <span class="inline-block w-3 h-3 bg-gray-300 mr-1"></span>市场总额
+                            <span class="inline-block w-3 h-3 brand-bg ml-4 mr-1"></span>SUPAREE
+                        </div>
+                    </div>
+                    <div class="h-80 relative">
+                        <canvas id="salesComparisonChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-500">
+                        <p>柱状图上方的百分比数字表示SUPAREE在该品线的销售额市占率</p>
+                    </div>
+                </div>
+                
+                <!-- 柱状图：各品线销量对比 -->
+                <div class="card p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-medium">各品线销量对比 (件)</h3>
+                        <div class="text-sm text-gray-500">
+                            <span class="inline-block w-3 h-3 bg-gray-300 mr-1"></span>市场总销量
+                            <span class="inline-block w-3 h-3 brand-bg ml-4 mr-1"></span>SUPAREE销量
+                        </div>
+                    </div>
+                    <div class="h-80 relative">
+                        <canvas id="volumeComparisonChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-500">
+                        <p>柱状图上方的百分比数字表示SUPAREE在该品线的销量市占率</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 数据表格 -->
+            <div class="card p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-medium">品线详细数据表格</h3>
+                    <div class="text-sm text-gray-500">
+                        <span class="mr-4">点击表头可排序</span>
+                        <span>共 <span id="rowCount" class="font-medium">13</span> 个品线</span>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200" id="dataTable">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider sortable code-cell" data-column="code">品线代码</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider sortable" data-column="page">页面</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider sortable col-bg-light" data-column="asinCount">ASIN数量</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider sortable col-bg-light" data-column="estAsinCount">预估ASIN</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider sortable col-sales" data-column="totalSales">市场总销售额(万)</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider sortable col-sales" data-column="supareeSales">SUPAREE销售额(万)</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider sortable col-sales" data-column="salesShare">销售额市占率</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider sortable col-volume" data-column="totalVolume">市场总销量</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider sortable col-volume" data-column="supareeVolume">SUPAREE销量</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider sortable col-volume" data-column="volumeShare">销量市占率</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider sortable" data-column="supareeRank">品牌排名</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider sortable" data-column="opportunityLevel">机会级别</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
+                            <!-- 数据将通过JavaScript动态插入 -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mt-6 flex justify-between items-center text-sm text-gray-500">
+                    <div>
+                        <span class="mr-4">颜色标识: <span class="brand-color font-medium">SUPAREE数据</span></span>
+                        <span>单位: 销售额为万美元，销量为件</span>
+                    </div>
+                    <div>
+                        <button id="resetSort" class="text-gray-600 hover:text-gray-900 px-3 py-1 rounded border border-gray-300 hover:bg-gray-50">重置排序</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 品线战略分析与建议 -->
+        <section class="mb-10">
+            <div class="card p-6 border-t-4 border-blue-600">
+                <h2 class="text-xl font-semibold mb-6 text-gray-800 flex items-center">
+                    <i class="fas fa-lightbulb mr-3 text-yellow-500"></i> SUPAREE 品线战略分析与建议
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- 左列 -->
+                    <div class="space-y-5">
+                        <!-- 优势品线 -->
+                        <div class="bg-blue-50 p-5 rounded-lg border border-blue-100">
+                            <h4 class="font-bold text-blue-900 mb-3 flex items-center">
+                                <i class="fas fa-trophy mr-2 text-yellow-500"></i> 优势品线 · 巩固护城河
+                            </h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <p class="text-sm font-bold text-blue-800">备胎灯：</p>
+                                    <p class="text-xs text-gray-700 mt-1">销售额市占率26.92%，销量市占率26.80%，排名双第1。保持供货稳定，扩展型号，建立绝对优势。</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold text-blue-800">镜边灯：</p>
+                                    <p class="text-xs text-gray-700 mt-1">销售额市占率9.52%，品牌销售额排名第1。优化Listing，增加变体，提升客单价。</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 潜力品线 -->
+                        <div class="bg-green-50 p-5 rounded-lg border border-green-100">
+                            <h4 class="font-bold text-green-900 mb-3 flex items-center">
+                                <i class="fas fa-chart-line mr-2 text-green-600"></i> 潜力品线 · 重点突破
+                            </h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <p class="text-sm font-bold text-green-800">JEEP大灯：</p>
+                                    <p class="text-xs text-gray-700 mt-1">市占率6.48%，市场容量$97.4万。拓展更多适配车型，目标提升至10%以上。</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold text-green-800">搜索灯：</p>
+                                    <p class="text-xs text-gray-700 mt-1">市占率5.68%，销量排名第4。可捆绑销售或套餐组合，带动整体增长。</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold text-green-800">雾灯：</p>
+                                    <p class="text-xs text-gray-700 mt-1">市占率4.04%，市场容量$45.4万，可考虑增加车型覆盖。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 右列 -->
+                    <div class="space-y-5">
+                        <!-- 低占率品线 -->
+                        <div class="bg-yellow-50 p-5 rounded-lg border border-yellow-100">
+                            <h4 class="font-bold text-yellow-900 mb-3 flex items-center">
+                                <i class="fas fa-exclamation-triangle mr-2 text-yellow-600"></i> 低占率品线 · 优化调整
+                            </h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <p class="text-sm font-bold text-yellow-800">JEEP尾灯：</p>
+                                    <p class="text-xs text-gray-700 mt-1">市占率4.36%，但销量排名仅12。优化流量转化，考虑与大灯捆绑销售。</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold text-yellow-800">磁吸拖车尾灯：</p>
+                                    <p class="text-xs text-gray-700 mt-1">市占率仅0.18%，销量排名60。需重新评估产品定价、流量入口或考虑迭代。</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold text-yellow-800">摩托车大灯总成：</p>
+                                    <p class="text-xs text-gray-700 mt-1">市占率1.04%，排名12。建议检查竞品，优化关键词和图片。</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 核心大市场 -->
+                        <div class="bg-purple-50 p-5 rounded-lg border border-purple-100">
+                            <h4 class="font-bold text-purple-900 mb-3 flex items-center">
+                                <i class="fas fa-car mr-2 text-purple-600"></i> 核心大市场 · JEEP已切入
+                            </h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <p class="text-sm font-bold text-purple-800">美国大灯总成：</p>
+                                    <p class="text-xs text-gray-700 mt-1">市场容量$247.1万，JEEP大灯市占2.55%。可逐步拓展更多车型，扩大份额。</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold text-purple-800">美国尾灯总成：</p>
+                                    <p class="text-xs text-gray-700 mt-1">市场容量$145.1万，JEEP尾灯市占0.69%，提升空间巨大，建议加强车型覆盖。</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 待开发品线 -->
+                        <div class="bg-gray-100 p-5 rounded-lg">
+                            <h4 class="font-bold text-gray-800 mb-3 flex items-center">
+                                <i class="fas fa-clock mr-2 text-gray-600"></i> 待开发品线
+                            </h4>
+                            <p class="text-xs text-gray-700 leading-relaxed">
+                                <span class="font-medium">边灯</span> ($15.8万)、<span class="font-medium">摩托车辅助灯</span> ($31.2万) 尚无SUPAREE布局，可考虑作为中长期拓展目标。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 2026关键目标 -->
+                <div class="mt-6 bg-gray-900 p-6 rounded-lg text-white">
+                    <h4 class="font-bold mb-4 flex items-center">
+                        <i class="fas fa-flag-checkered mr-2 text-yellow-400"></i> 2026关键执行目标
+                    </h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div class="border-l-2 border-blue-500 pl-4">
+                            <p class="text-gray-400 text-xs">月销售额目标</p>
+                            <p class="text-xl font-bold">$30万</p>
+                        </div>
+                        <div class="border-l-2 border-green-500 pl-4">
+                            <p class="text-gray-400 text-xs">客单价目标</p>
+                            <p class="text-xl font-bold">$85</p>
+                        </div>
+                        <div class="border-l-2 border-yellow-500 pl-4">
+                            <p class="text-gray-400 text-xs">优势品线数</p>
+                            <p class="text-xl font-bold">6个</p>
+                        </div>
+                        <div class="border-l-2 border-red-500 pl-4">
+                            <p class="text-gray-400 text-xs">市占率目标</p>
+                            <p class="text-xl font-bold">5%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 页脚 -->
+        <footer class="mt-12 pt-8 border-t border-gray-200 text-center text-gray-500 text-sm">
+            <p>亚马逊美国站 SUPAREE 品线市场分析仪表板 | 数据来源: 2026年3月内部统计 | 单位: 美元 | 生成时间: <span id="currentDate"></span></p>
+            <p class="mt-2">使用技术: HTML5, Tailwind CSS, Chart.js, Font Awesome</p>
+        </footer>
+    </div>
+    
+    <script>
+        // 数据集 - 完全按照您提供的13行数据
+        const marketData = [
+            { code: "A4-1", page: "美国大灯总成", asinCount: 282, estAsinCount: 544, totalSales: 247.1, totalVolume: 24451, supareeSales: 0, supareeVolume: 0, salesShare: 0, volumeShare: 0, supareeRank: null, opportunityLevel: "核心市场" },
+            { code: "A4-1", page: "美国尾灯总成", asinCount: 336, estAsinCount: 739, totalSales: 145.1, totalVolume: 24000, supareeSales: 0, supareeVolume: 0, salesShare: 0, volumeShare: 0, supareeRank: null, opportunityLevel: "核心市场" },
+            { code: "A4-1", page: "JEEP大灯", asinCount: 151, estAsinCount: 304, totalSales: 97.4, totalVolume: 9876, supareeSales: 6.3, supareeVolume: 457, salesShare: 6.48, volumeShare: 4.63, supareeRank: 4, opportunityLevel: "潜力品线" },
+            { code: "A4-3", page: "磁吸拖车尾灯", asinCount: 140, estAsinCount: 185, totalSales: 79.4, totalVolume: 13752, supareeSales: 0.1, supareeVolume: 30, salesShare: 0.18, volumeShare: 0.22, supareeRank: 60, opportunityLevel: "低占率" },
+            { code: "A4-1", page: "雾灯", asinCount: 106, estAsinCount: 172, totalSales: 45.4, totalVolume: 9330, supareeSales: 1.8, supareeVolume: 301, salesShare: 4.04, volumeShare: 3.23, supareeRank: 7, opportunityLevel: "潜力品线" },
+            { code: "A4-2", page: "高位刹车灯", asinCount: 192, estAsinCount: 436, totalSales: 43.5, totalVolume: 15000, supareeSales: 1.2, supareeVolume: 350, salesShare: 2.77, volumeShare: 2.37, supareeRank: 7, opportunityLevel: "中等机会" },
+            { code: "A4-3", page: "搜索灯", asinCount: 55, estAsinCount: 109, totalSales: 26.9, totalVolume: 1517, supareeSales: 1.5, supareeVolume: 90, salesShare: 5.68, volumeShare: 5.93, supareeRank: 4, opportunityLevel: "潜力品线" },
+            { code: "A4-1", page: "JEEP尾灯", asinCount: 106, estAsinCount: 226, totalSales: 23.3, totalVolume: 3052, supareeSales: 1.0, supareeVolume: 97, salesShare: 4.36, volumeShare: 3.18, supareeRank: 8, opportunityLevel: "中等机会" },
+            { code: "A4-2", page: "镜边灯", asinCount: 154, estAsinCount: 321, totalSales: 22.9, totalVolume: 8438, supareeSales: 2.2, supareeVolume: 573, salesShare: 9.52, volumeShare: 6.79, supareeRank: 1, opportunityLevel: "优势品线" },
+            { code: "A4-2", page: "边灯", asinCount: 81, estAsinCount: 170, totalSales: 15.8, totalVolume: 5367, supareeSales: 0, supareeVolume: 0, salesShare: 0, volumeShare: 0, supareeRank: null, opportunityLevel: "待开发" },
+            { code: "A4-2", page: "备胎灯", asinCount: 30, estAsinCount: 66, totalSales: 3.2, totalVolume: 765, supareeSales: 0.9, supareeVolume: 205, salesShare: 26.92, volumeShare: 26.80, supareeRank: 1, opportunityLevel: "优势品线" },
+            { code: "A4-4", page: "摩托车辅助灯", asinCount: 93, estAsinCount: 152, totalSales: 31.2, totalVolume: 4680, supareeSales: 0, supareeVolume: 0, salesShare: 0, volumeShare: 0, supareeRank: null, opportunityLevel: "待开发" },
+            { code: "A4-4", page: "摩托车大灯总成", asinCount: 118, estAsinCount: 304, totalSales: 17.4, totalVolume: 2851, supareeSales: 0.3, supareeVolume: 66, salesShare: 1.04, volumeShare: 1.64, supareeRank: 12, opportunityLevel: "低占率" }
+        ];
+
+        // 计算总市场销售额（去重后：排除JEEP大灯和JEEP尾灯）
+        const totalMarketSales = marketData
+            .filter(item => item.page !== "JEEP大灯" && item.page !== "JEEP尾灯")
+            .reduce((sum, item) => sum + item.totalSales, 0);
+        
+        // 为每个品线添加市场容量占比（数值型，方便排序）- 但不显示在表格中
+        marketData.forEach(item => {
+            if (item.page !== "JEEP大灯" && item.page !== "JEEP尾灯") {
+                item.marketCapacity = parseFloat(((item.totalSales / totalMarketSales) * 100).toFixed(1));
+            } else {
+                item.marketCapacity = null; // 子品类不计算占比
+            }
+        });
+        
+        // 默认按市场总销售额从高到低排序
+        const defaultSortedData = [...marketData].sort((a, b) => b.totalSales - a.totalSales);
+        
+        // 当前日期
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('zh-CN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        // 机会级别颜色映射
+        const opportunityColors = {
+            "优势品线": "bg-green-100 text-green-800",
+            "潜力品线": "bg-blue-100 text-blue-800",
+            "中等机会": "bg-yellow-100 text-yellow-800",
+            "低占率": "bg-red-100 text-red-800",
+            "待开发": "bg-gray-100 text-gray-800",
+            "核心市场": "bg-purple-100 text-purple-800"
+        };
+        
+        // 渲染数据表格
+        function renderTable(data) {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+            
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'highlight-row';
+                
+                // 高亮显示SUPAREE排名第1的行
+                if (item.supareeRank === 1) {
+                    row.classList.add('bg-blue-50');
+                }
+                
+                // 根据机会级别添加左边框
+                if (item.opportunityLevel === "优势品线") {
+                    row.classList.add('border-l-4', 'border-green-400');
+                } else if (item.opportunityLevel === "潜力品线") {
+                    row.classList.add('border-l-4', 'border-blue-400');
+                } else if (item.opportunityLevel === "低占率") {
+                    row.classList.add('border-l-4', 'border-red-400');
+                } else if (item.opportunityLevel === "核心市场") {
+                    row.classList.add('border-l-4', 'border-purple-400');
+                } else if (item.opportunityLevel === "待开发") {
+                    row.classList.add('border-l-4', 'border-gray-400');
+                }
+                
+                // 处理排名显示
+                let rankDisplay = '-';
+                if (item.supareeRank) {
+                    if (item.supareeRank === 1) {
+                        rankDisplay = '<span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"><i class="fas fa-crown mr-1 text-yellow-500"></i>第1名</span>';
+                    } else {
+                        rankDisplay = `<span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">第${item.supareeRank}名</span>`;
+                    }
+                }
+                
+                row.innerHTML = `
+                    <td class="px-4 py-4 whitespace-nowrap code-cell">
+                        <div class="font-bold text-gray-900">${item.code}</div>
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-gray-700">${item.page}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-gray-700 col-bg-light">${item.asinCount}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-gray-700 col-bg-light">${item.estAsinCount}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-gray-700 col-sales">${item.totalSales.toFixed(1)}万</td>
+                    <td class="px-4 py-4 whitespace-nowrap font-bold brand-color col-sales">${item.supareeSales > 0 ? item.supareeSales.toFixed(1) + '万' : '—'}</td>
+                    <td class="px-4 py-4 whitespace-nowrap col-sales">
+                        ${item.salesShare > 0 ? `
+                            <div class="flex items-center">
+                                <span class="font-bold ${item.salesShare >= 10 ? 'text-green-600' : item.salesShare >= 4 ? 'text-blue-600' : 'text-red-600'}">${item.salesShare.toFixed(2)}%</span>
+                                ${item.salesShare >= 10 ? '<i class="fas fa-crown ml-2 text-yellow-500"></i>' : ''}
+                            </div>
+                        ` : '—'}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-gray-700 col-volume">${item.totalVolume.toLocaleString()}</td>
+                    <td class="px-4 py-4 whitespace-nowrap font-bold brand-color col-volume">${item.supareeVolume > 0 ? item.supareeVolume.toLocaleString() : '—'}</td>
+                    <td class="px-4 py-4 whitespace-nowrap col-volume">
+                        ${item.volumeShare > 0 ? `
+                            <div class="flex items-center">
+                                <span class="font-bold ${item.volumeShare >= 10 ? 'text-green-600' : item.volumeShare >= 4 ? 'text-blue-600' : 'text-red-600'}">${item.volumeShare.toFixed(2)}%</span>
+                            </div>
+                        ` : '—'}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                        ${rankDisplay}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${opportunityColors[item.opportunityLevel] || 'bg-gray-100 text-gray-800'}">
+                            ${item.opportunityLevel}
+                        </span>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            document.getElementById('rowCount').textContent = data.length;
+        }
+        
+        // 初始化表格（默认按总销售额排序）
+        renderTable(defaultSortedData);
+        
+        // 表格排序功能
+        let currentSortColumn = 'totalSales';
+        let currentSortDirection = 'desc';
+        
+        // 初始化表头样式
+        document.querySelector('[data-column="totalSales"]').classList.add('desc');
+        
+        document.querySelectorAll('.sortable').forEach(header => {
+            header.addEventListener('click', () => {
+                const column = header.dataset.column;
+                
+                // 重置其他列的排序样式
+                document.querySelectorAll('.sortable').forEach(h => {
+                    if (h !== header) {
+                        h.classList.remove('asc', 'desc');
+                    }
+                });
+                
+                // 切换排序方向
+                if (currentSortColumn === column) {
+                    currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+                } else {
+                    currentSortColumn = column;
+                    currentSortDirection = 'desc'; // 默认降序
+                }
+                
+                // 更新排序样式
+                header.classList.remove('asc', 'desc');
+                header.classList.add(currentSortDirection);
+                
+                // 排序数据
+                const sortedData = [...marketData].sort((a, b) => {
+                    let aValue = a[column];
+                    let bValue = b[column];
+                    
+                    // 处理空值
+                    if (aValue === null || aValue === undefined) aValue = -1;
+                    if (bValue === null || bValue === undefined) bValue = -1;
+                    if (aValue === '—') aValue = -1;
+                    if (bValue === '—') bValue = -1;
+                    
+                    // 处理机会级别文本排序
+                    if (column === 'opportunityLevel') {
+                        const levelOrder = { "优势品线": 5, "潜力品线": 4, "核心市场": 3, "中等机会": 2, "低占率": 1, "待开发": 0 };
+                        aValue = levelOrder[aValue] || 0;
+                        bValue = levelOrder[bValue] || 0;
+                    }
+                    
+                    if (currentSortDirection === 'asc') {
+                        return aValue > bValue ? 1 : -1;
+                    } else {
+                        return aValue < bValue ? 1 : -1;
+                    }
+                });
+                
+                // 重新渲染表格
+                renderTable(sortedData);
+            });
+        });
+        
+        // 重置排序按钮
+        document.getElementById('resetSort').addEventListener('click', () => {
+            document.querySelectorAll('.sortable').forEach(header => {
+                header.classList.remove('asc', 'desc');
+            });
+            document.querySelector('[data-column="totalSales"]').classList.add('desc');
+            currentSortColumn = 'totalSales';
+            currentSortDirection = 'desc';
+            renderTable(defaultSortedData);
+        });
+        
+        // 初始化Chart.js图表
+        document.addEventListener('DOMContentLoaded', function() {
+            // 销售额对比柱状图
+            const salesCtx = document.getElementById('salesComparisonChart').getContext('2d');
+            
+            // 销量对比柱状图
+            const volumeCtx = document.getElementById('volumeComparisonChart').getContext('2d');
+            
+            // 准备数据（过滤掉不需要在图表中显示的？保留全部13个）
+            const chartLabels = marketData.map(item => item.page);
+            
+            // 销售额对比柱状图
+            new Chart(salesCtx, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [
+                        {
+                            label: '市场总销售额',
+                            data: marketData.map(item => item.totalSales),
+                            backgroundColor: 'rgba(148, 163, 184, 0.7)',
+                            borderColor: 'rgb(148, 163, 184)',
+                            borderWidth: 1,
+                            barPercentage: 0.6,
+                        },
+                        {
+                            label: 'SUPAREE销售额',
+                            data: marketData.map(item => item.supareeSales),
+                            backgroundColor: 'rgba(37, 99, 235, 0.7)',
+                            borderColor: 'rgb(37, 99, 235)',
+                            borderWidth: 1,
+                            barPercentage: 0.6,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    if (context.datasetIndex === 1) {
+                                        const share = marketData[context.dataIndex].salesShare;
+                                        return `${context.dataset.label}: ${context.parsed.y.toFixed(1)}万 (市占率: ${share}%)`;
+                                    }
+                                    return `${context.dataset.label}: ${context.parsed.y.toFixed(1)}万`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '销售额 (万美元)'
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    }
+                },
+                plugins: [{
+                    id: 'salesDatalabels',
+                    afterDatasetsDraw(chart) {
+                        const { ctx, data } = chart;
+                        const meta = chart.getDatasetMeta(1); // SUPAREE数据集
+                        
+                        ctx.save();
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'bottom';
+                        ctx.font = 'bold 11px Inter, sans-serif';
+                        
+                        meta.data.forEach((bar, index) => {
+                            const share = marketData[index].salesShare;
+                            if (share === 0 || !share) return;
+                            
+                            const x = bar.x;
+                            const y = bar.y - 5;
+                            
+                            ctx.fillStyle = share >= 10 ? '#16a34a' : share >= 4 ? '#2563eb' : '#dc2626';
+                            ctx.fillText(`${share}%`, x, y);
+                        });
+                        
+                        ctx.restore();
+                    }
+                }]
+            });
+            
+            // 销量对比柱状图
+            new Chart(volumeCtx, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [
+                        {
+                            label: '市场总销量',
+                            data: marketData.map(item => item.totalVolume),
+                            backgroundColor: 'rgba(148, 163, 184, 0.7)',
+                            borderColor: 'rgb(148, 163, 184)',
+                            borderWidth: 1,
+                            barPercentage: 0.6,
+                        },
+                        {
+                            label: 'SUPAREE销量',
+                            data: marketData.map(item => item.supareeVolume),
+                            backgroundColor: 'rgba(37, 99, 235, 0.7)',
+                            borderColor: 'rgb(37, 99, 235)',
+                            borderWidth: 1,
+                            barPercentage: 0.6,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    if (context.datasetIndex === 1) {
+                                        const share = marketData[context.dataIndex].volumeShare;
+                                        return `${context.dataset.label}: ${context.parsed.y.toLocaleString()}件 (市占率: ${share}%)`;
+                                    }
+                                    return `${context.dataset.label}: ${context.parsed.y.toLocaleString()}件`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '销量 (件)'
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    }
+                },
+                plugins: [{
+                    id: 'volumeDatalabels',
+                    afterDatasetsDraw(chart) {
+                        const { ctx } = chart;
+                        const meta = chart.getDatasetMeta(1); // SUPAREE数据集
+                        
+                        ctx.save();
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'bottom';
+                        ctx.font = 'bold 11px Inter, sans-serif';
+                        
+                        meta.data.forEach((bar, index) => {
+                            const share = marketData[index].volumeShare;
+                            if (share === 0 || !share) return;
+                            
+                            const x = bar.x;
+                            const y = bar.y - 5;
+                            
+                            ctx.fillStyle = share >= 10 ? '#16a34a' : share >= 4 ? '#2563eb' : '#dc2626';
+                            ctx.fillText(`${share}%`, x, y);
+                        });
+                        
+                        ctx.restore();
+                    }
+                }]
+            });
+        });
+    </script>
+</body>
+</html>
